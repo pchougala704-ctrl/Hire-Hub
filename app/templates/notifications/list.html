@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<section class="container py-5"><span class="eyebrow">Updates</span><h1 class="fw-bold mt-2 mb-4">Notifications</h1><div class="card">{% for item in notifications %}<div class="list-row"><div><div>{{ item.message }}</div><div class="small text-secondary mt-1">{{ item.created_at.strftime('%b %d, %Y %H:%M') if item.created_at else '' }}</div></div><span class="badge text-bg-light">{{ 'Read' if item.read else 'New' }}</span></div>{% else %}<div class="p-4 text-secondary">No notifications yet.</div>{% endfor %}</div></section>
+{% endblock %}

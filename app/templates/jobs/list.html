@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Explore jobs{% endblock %}
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="mb-4"><span class="eyebrow">Find your fit</span><h1 class="fw-bold mt-2">Explore opportunities</h1><p class="text-secondary">{{ total }} open position{{ '' if total == 1 else 's' }}</p></div>
+  <form class="card filter-card mb-4"><div class="card-body row g-3 align-items-end">
+    <div class="col-md-4"><label class="form-label" for="keyword">Keyword</label><input class="form-control" id="keyword" name="keyword" value="{{ filters.keyword }}" placeholder="Title or skill"></div>
+    <div class="col-md-3"><label class="form-label" for="location">Location</label><input class="form-control" id="location" name="location" value="{{ filters.location }}" placeholder="City or remote"></div>
+    <div class="col-md-2"><label class="form-label" for="work_mode">Work mode</label><select class="form-select" id="work_mode" name="work_mode"><option value="">Any</option>{% for mode in ['REMOTE','HYBRID','ONSITE'] %}<option value="{{ mode }}" {% if filters.work_mode == mode %}selected{% endif %}>{{ mode|title }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><label class="form-label" for="employment_type">Type</label><select class="form-select" id="employment_type" name="employment_type"><option value="">Any</option>{% for type in ['FULL_TIME','PART_TIME','INTERNSHIP','CONTRACT'] %}<option value="{{ type }}" {% if filters.employment_type == type %}selected{% endif %}>{{ type|replace('_',' ')|title }}</option>{% endfor %}</select></div>
+    <div class="col-md-1 d-grid"><button class="btn btn-dark" type="submit">Go</button></div>
+  </div></form>
+  <div class="row g-3">{% for job in jobs %}<div class="col-md-6"><article class="card job-card h-100"><div class="card-body p-4"><div class="d-flex justify-content-between"><span class="badge text-bg-light">{{ job.work_mode|title }}</span><span class="small text-secondary">{{ job.employment_type|replace('_',' ')|title }}</span></div><h2 class="h4 mt-3"><a class="text-decoration-none text-dark" href="{{ url_for('web.job_detail', job_id=job._id) }}">{{ job.title }}</a></h2><p class="text-secondary">{{ job.location or 'Location flexible' }}{% if job.salary_min %} · {{ job.salary_min|int }}{% if job.salary_max %}–{{ job.salary_max|int }}{% endif %}{% endif %}</p><p>{{ job.description|striptags|truncate(180) }}</p><div class="d-flex flex-wrap gap-1">{% for skill in job.skills[:5] %}<span class="badge skill-badge">{{ skill }}</span>{% endfor %}</div><a href="{{ url_for('web.job_detail', job_id=job._id) }}" class="btn btn-outline-dark btn-sm mt-4">View role</a></div></article></div>{% else %}<div class="col"><div class="empty-state"><h2 class="h5">No matching roles found</h2><p class="mb-0">Try widening your search or clearing a filter.</p></div></div>{% endfor %}</div>
+  {% if total > 12 %}<nav class="mt-4" aria-label="Job pages"><a class="btn btn-outline-secondary {% if page <= 1 %}disabled{% endif %}" href="{{ url_for('web.jobs', page=page-1, **filters) }}">Previous</a><span class="mx-3">Page {{ page }}</span><a class="btn btn-outline-secondary {% if page * 12 >= total %}disabled{% endif %}" href="{{ url_for('web.jobs', page=page+1, **filters) }}">Next</a></nav>{% endif %}
+</section>
+{% endblock %}

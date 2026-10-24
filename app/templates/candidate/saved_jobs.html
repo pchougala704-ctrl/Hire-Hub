@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Saved jobs{% endblock %}
+{% block content %}
+<section class="container py-5"><span class="eyebrow">For later</span><h1 class="fw-bold mt-2 mb-4">Saved jobs</h1><div class="row g-3">{% for job in jobs %}<div class="col-md-6"><article class="card job-card h-100"><div class="card-body p-4"><span class="badge text-bg-light">{{ job.work_mode|title }}</span><h2 class="h4 mt-3"><a class="text-decoration-none text-dark" href="{{ url_for('web.job_detail', job_id=job._id) }}">{{ job.title }}</a></h2><p class="text-secondary">{{ job.location or 'Location flexible' }}</p><a class="btn btn-outline-dark btn-sm" href="{{ url_for('web.job_detail', job_id=job._id) }}">View role</a></div></article></div>{% else %}<div class="col"><div class="empty-state">Save interesting roles to revisit them here.</div></div>{% endfor %}</div></section>
+{% endblock %}

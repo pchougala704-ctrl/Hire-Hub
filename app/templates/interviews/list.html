@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Interviews{% endblock %}
+{% block content %}
+<section class="container py-5"><span class="eyebrow">Stay prepared</span><h1 class="fw-bold mt-2 mb-4">Interviews</h1><div class="row g-3">{% for interview in interviews %}<div class="col-md-6"><article class="card"><div class="card-body p-4"><div class="d-flex justify-content-between"><h2 class="h5">Interview</h2><span class="badge text-bg-light">{{ interview.status|title }}</span></div><p class="text-secondary">{{ interview.date }} at {{ interview.time }}</p><p>{{ interview.type|replace('_',' ')|title }}</p>{% if interview.meeting_link %}<a href="{{ interview.meeting_link }}" rel="noopener noreferrer" target="_blank">Join meeting</a>{% endif %}</div></article></div>{% else %}<div class="col"><div class="empty-state">Scheduled interviews will appear here.</div></div>{% endfor %}</div></section>
+{% endblock %}

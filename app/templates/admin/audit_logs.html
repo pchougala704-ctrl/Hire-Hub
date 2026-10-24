@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Audit logs{% endblock %}
+{% block content %}
+<section class="container py-5"><span class="eyebrow">Administration</span><h1 class="fw-bold mt-2 mb-4">Audit logs</h1><div class="card">{% for log in logs %}<div class="list-row"><div><div class="fw-semibold">{{ log.action|replace('_',' ')|title }}</div><div class="small text-secondary">{{ log.user_id or 'System' }} · {{ log.resource }} {{ log.resource_id }}</div></div><span class="small text-secondary">{{ log.timestamp.strftime('%Y-%m-%d %H:%M UTC') if log.timestamp else '' }}</span></div>{% else %}<div class="p-4 text-secondary">No audit events have been recorded.</div>{% endfor %}</div></section>
+{% endblock %}

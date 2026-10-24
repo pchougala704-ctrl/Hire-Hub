@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Companies{% endblock %}
+{% block content %}
+<section class="container py-5"><span class="eyebrow">Administration</span><h1 class="fw-bold mt-2 mb-4">Companies</h1><div class="card">{% for company in companies %}<div class="list-row"><div><div class="fw-semibold">{{ company.name }}</div><div class="small text-secondary">{{ company.location or 'No location provided' }}{% if company.website %} · {{ company.website }}{% endif %}</div></div><div class="d-flex align-items-center gap-2"><span class="badge {{ 'text-bg-success' if company.verified else 'text-bg-warning' }}">{{ 'Verified' if company.verified else 'Pending' }}</span><form method="post" action="{{ url_for('web.verify_company', company_id=company._id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="verified" value="{{ 'false' if company.verified else 'true' }}"><button class="btn btn-sm btn-outline-dark" type="submit">{{ 'Unverify' if company.verified else 'Verify' }}</button></form></div></div>{% else %}<div class="p-4 text-secondary">No companies found.</div>{% endfor %}</div></section>
+{% endblock %}

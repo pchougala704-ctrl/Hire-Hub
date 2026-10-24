@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Find your next opportunity{% endblock %}
+{% block content %}
+<section class="hero py-5">
+  <div class="container py-lg-5">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <span class="eyebrow">A better way to work</span>
+        <h1 class="display-3 fw-bold mt-3">Your next chapter<br><span class="text-info">starts here.</span></h1>
+        <p class="lead text-secondary mt-3">Discover roles where your skills can make a difference. Find thoughtful teams and opportunities built for you.</p>
+        <form class="search-panel row g-2 mt-4" action="{{ url_for('web.jobs') }}">
+          <div class="col-md"><label class="visually-hidden" for="keyword">Role or skill</label><input class="form-control form-control-lg" id="keyword" name="keyword" placeholder="Role, company, or skill"></div>
+          <div class="col-md-4"><label class="visually-hidden" for="location">Location</label><input class="form-control form-control-lg" id="location" name="location" placeholder="City or remote"></div>
+          <div class="col-md-auto"><button class="btn btn-info btn-lg w-100" type="submit">Search jobs</button></div>
+        </form>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block"><div class="hero-card p-4"><div class="small text-uppercase text-secondary">A good fit is closer than you think</div><div class="display-5 fw-bold my-3">Work that<br>works for you.</div><div class="text-secondary">Explore roles from teams that value your experience, ideas, and potential.</div><div class="accent-orb"></div></div></div>
+    </div>
+  </div>
+</section>
+<section class="container py-5">
+  <div class="d-flex justify-content-between align-items-end mb-4"><div><div class="eyebrow">Fresh opportunities</div><h2 class="fw-bold mt-2">Recently posted</h2></div><a class="btn btn-outline-dark" href="{{ url_for('web.jobs') }}">Browse all jobs</a></div>
+  <div class="row g-3">{% for job in jobs %}<div class="col-md-6 col-lg-4"><div class="card job-card h-100"><div class="card-body p-4"><span class="badge text-bg-light">{{ job.work_mode|title }}</span><h3 class="h5 mt-3"><a class="text-decoration-none text-dark" href="{{ url_for('web.job_detail', job_id=job._id) }}">{{ job.title }}</a></h3><p class="text-secondary mb-2">{{ job.location or 'Location flexible' }}</p><div class="d-flex flex-wrap gap-1">{% for skill in job.skills[:3] %}<span class="badge skill-badge">{{ skill }}</span>{% endfor %}</div></div></div></div>{% else %}<div class="col"><p class="text-secondary">No jobs posted yet. Please check again soon.</p></div>{% endfor %}</div>
+</section>
+{% endblock %}

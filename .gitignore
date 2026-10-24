@@ -158,6 +158,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+uploads/
+app/uploads/resumes/*
+!app/uploads/resumes/.gitkeep
 
 # Spyder project settings
 .spyderproject

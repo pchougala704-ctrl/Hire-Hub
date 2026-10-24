@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Something went wrong{% endblock %}
+{% block content %}<section class="container py-5"><div class="empty-state"><span class="eyebrow">HireHub</span><h1 class="h3 fw-bold mt-2">We couldn't complete that request</h1><p>{{ message }}</p><a class="btn btn-dark" href="{{ url_for('web.index') }}">Return home</a></div></section>{% endblock %}
