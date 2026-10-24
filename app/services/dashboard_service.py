@@ -50,9 +50,8 @@ class DashboardService:
                 {**query, "status": "SELECTED"}
             )
         else:
-            data["counts"] = {
-                name: self.db[name].count_documents({})
-                for name in ("users", "companies", "jobs", "applications", "interviews")
-            }
-            data["logs"] = list(self.db["audit_logs"].find().sort("timestamp", -1).limit(10))
+            from app.services.admin_service import AdminService
+
+            data["counts"] = AdminService(self.db).dashboard_stats()
+            data["logs"] = AdminService(self.db).audit_logs(10)
         return data

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Administrator sign in{% endblock %}
+{% block content %}
+<section class="container auth-wrap py-5"><div class="card auth-card mx-auto"><div class="card-body p-4 p-md-5">
+  <span class="eyebrow">Restricted access</span><h1 class="h2 fw-bold mt-2">Administrator sign in</h1><p class="text-secondary">Use an administrator account created through the local setup command.</p>
+  <form method="post" class="mt-4"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3"><label class="form-label" for="email">Administrator email</label><input class="form-control" id="email" name="email" type="email" autocomplete="username" required></div>
+    <div class="mb-3"><label class="form-label" for="password">Password</label><input class="form-control" id="password" name="password" type="password" autocomplete="current-password" required></div>
+    <button class="btn btn-dark w-100 py-2 mt-2" type="submit">Sign in to admin</button>
+  </form><p class="small mt-4 mb-0 text-secondary">Administrator accounts cannot be created from public registration. <a href="{{ url_for('web_auth.login') }}">Return to sign in</a></p>
+</div></div></section>
+{% endblock %}

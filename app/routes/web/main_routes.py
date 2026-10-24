@@ -8,6 +8,7 @@ from app.exceptions import HireHubError
 from app.extensions import get_db
 from app.services.application_service import ApplicationService
 from app.services.admin_service import AdminService
+from app.services.audit_service import AuditService
 from app.services.candidate_service import CandidateService
 from app.services.dashboard_service import DashboardService
 from app.services.job_service import JobService
@@ -103,6 +104,14 @@ def saved_jobs():
 @web_bp.get("/dashboard")
 @login_required
 def dashboard():
+    user = current_user()
+    data = DashboardService(get_db()).for_user(user)
+    return render_template("dashboard/index.html", user=user, data=data)
+
+
+@web_bp.get("/admin/dashboard")
+@role_required("ADMIN")
+def admin_dashboard():
     user = current_user()
     data = DashboardService(get_db()).for_user(user)
     return render_template("dashboard/index.html", user=user, data=data)
@@ -298,6 +307,47 @@ def admin_users():
     return render_template("admin/users.html", users=users)
 
 
+@web_bp.get("/admin/candidates")
+@role_required("ADMIN")
+def admin_candidates():
+    users = AdminService(get_db()).list_users(role="CANDIDATE")
+    return render_template("admin/people.html", users=users, page_title="Candidates")
+
+
+@web_bp.get("/admin/recruiters")
+@role_required("ADMIN")
+def admin_recruiters():
+    users = AdminService(get_db()).list_users(role="RECRUITER")
+    return render_template("admin/people.html", users=users, page_title="Recruiters")
+
+
+@web_bp.get("/admin/jobs")
+@role_required("ADMIN")
+def admin_jobs():
+    jobs = AdminService(get_db()).list_jobs()
+    return render_template("admin/jobs.html", jobs=jobs)
+
+
+@web_bp.post("/admin/jobs/<job_id>/status")
+@role_required("ADMIN")
+def admin_update_job_status(job_id):
+    status = request.form.get("status", "")
+    try:
+        oid = JobService(get_db()).moderate(job_id, status)
+        AuditService(get_db()).record(current_user()["_id"], "JOB_MODERATED", "job", oid, {"status": status})
+        flash("Job status updated.", "success")
+    except HireHubError as exc:
+        flash(str(exc), "danger")
+    return redirect(url_for("web.admin_jobs"))
+
+
+@web_bp.get("/admin/applications")
+@role_required("ADMIN")
+def admin_applications():
+    applications = ApplicationService(get_db()).list_with_jobs(current_user(), 200)
+    return render_template("applications/list.html", applications=applications, user=current_user())
+
+
 @web_bp.get("/admin/companies")
 @role_required("ADMIN")
 def admin_companies():
@@ -336,7 +386,7 @@ def admin_reports():
 def set_user_active(user_id):
     try:
         active = request.form.get("active") == "true"
-        oid = AdminService(get_db()).set_user_active(user_id, active)
+        oid = AdminService(get_db()).set_user_active(user_id, active, current_user())
         AuditService(get_db()).record(current_user()["_id"], "USER_ACTIVATED" if active else "USER_DEACTIVATED", "user", oid)
         flash("User status updated.", "success")
     except HireHubError as exc:

@@ -283,7 +283,7 @@ def admin_users():
 @role_required("ADMIN")
 def set_user_active(user_id):
     active = json_body().get("active")
-    oid = AdminService(get_db()).set_user_active(user_id, active)
+    oid = AdminService(get_db()).set_user_active(user_id, active, current_user())
     AuditService(get_db()).record(current_user()["_id"], "USER_ACTIVATED" if active else "USER_DEACTIVATED", "user", oid)
     return api_response(message="User status updated")
 

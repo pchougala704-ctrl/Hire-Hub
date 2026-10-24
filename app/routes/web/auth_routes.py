@@ -41,6 +41,27 @@ def login():
     return render_template("auth/login.html")
 
 
+@auth_bp.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        try:
+            user = AuthService(get_db()).login(
+                request.form.get("email"),
+                request.form.get("password"),
+            )
+            if user.get("role") != "ADMIN":
+                flash("This sign-in page is for administrator accounts.", "danger")
+                return render_template("auth/admin_login.html"), 403
+            session.clear()
+            session["user_id"] = str(user["_id"])
+            session["role"] = user["role"]
+            session.permanent = True
+            return redirect(url_for("web.admin_dashboard"))
+        except HireHubError as exc:
+            flash(str(exc), "danger")
+    return render_template("auth/admin_login.html")
+
+
 @auth_bp.post("/logout")
 def logout():
     user_id = session.get("user_id")

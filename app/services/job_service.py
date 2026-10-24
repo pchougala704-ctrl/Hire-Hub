@@ -28,6 +28,7 @@ class JobService:
                 {"$or": [
                 {"title": {"$regex": re.escape(str(filters["keyword"])), "$options": "i"}},
                 {"description": {"$regex": re.escape(str(filters["keyword"])), "$options": "i"}},
+                {"skills": {"$regex": re.escape(str(filters["keyword"])), "$options": "i"}},
                 ]},
                 {"$or": query.pop("$or")},
             ]
